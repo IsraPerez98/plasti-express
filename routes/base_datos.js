@@ -2,7 +2,12 @@
 var mongoose = require('mongoose');
 
 //Set up default mongoose connection
-var mongoDB = 'mongodb://127.0.0.1/my_database';
+
+//datos de esto se escriben en el archivo .env, ver documentacion dotenv'
+//var mongoDB = `mongodb://${process.env.MONGODB_USUARIO}:${process.env.MONGODB_CONTRASENA}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PUERTO}/${process.env.MONGODB_DATABASE}`;
+// no vamos a considerar usuario y contraseña todavia
+var mongoDB = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PUERTO}/${process.env.MONGODB_DATABASE}`;
+console.log(mongoDB);
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //Get the default connection
@@ -12,4 +17,10 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
-module.exports = db;
+const refreshTokensJWTSchema = new mongoose.Schema( {
+    token: String
+}); // los tokens de refresco de JWT (ver autenticacion.js)
+
+const RefreshTokenJWT = mongoose.model('RefreshTokenJWT', refreshTokensJWTSchema);
+
+module.exports = {RefreshTokenJWT};

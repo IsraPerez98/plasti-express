@@ -1,26 +1,33 @@
 const express = require('express');
-//const base = require('./base_datos.js');
+const db = require('./base_datos.js');
 const router = express.Router();
 
 const jwt = require('jsonwebtoken');
 
 
-let tokensRefresco = []; // cambiar esto a mongoDB
-
 router.post('/token', function(req, res) {
     const tokenRefresco = req.body.token;
     if (tokenRefresco == null) return res.sendStatus(401);
-    if (!tokensRefresco.includes(tokenRefresco)) return res.sendStatus(403);
-    jwt.verify(tokenRefresco, process.env.REFRESCO_TOKEN_SECRETO, function(err, usuario) {
-        if (err) return res.sendStatus(403);
-        const tokenAcceso = generarTokenAcceso( {nombre: usuario.nombre} );
-        res.json({ tokenAcceso: tokenAcceso });
+    //if (!tokensRefresco.includes(tokenRefresco)) return res.sendStatus(403);
+    const query = db.RefreshTokenJWT.find({ token: tokenRefresco })// llamamos a la base mongoDB para ver si el token de refresco es valido
+    query.exec( function(err, docs) {  
+        if(err) return res.sendStatus(500); // si el sv no conecta tiramos err 500
+        if(docs.length == 0) return res.sendStatus(403); // si no se encuentra ningun token igual en la db, es invalido
+        jwt.verify(tokenRefresco, process.env.REFRESCO_TOKEN_SECRETO, function(err, usuario) { // generamos un nuevo token de acceso
+            if (err) return res.sendStatus(403);
+            const tokenAcceso = generarTokenAcceso( {nombre: usuario.nombre} );
+            res.json({ tokenAcceso: tokenAcceso });
+        })
     })
 })
 
 router.delete("/logout", function(req, res) {
-    tokensRefresco = tokensRefresco.filter(token => token !== req.body.token); //cambiar a mongoDB
-    res.sendStatus(204);
+    
+    db.RefreshTokenJWT.deleteOne({token: req.body.token}, function(err){ // borramos el token de la base de datos
+
+            if(err) return res.sendStatus(500); // implementar algo mejor para estos errores
+            res.sendStatus(204);
+    }); 
 })
 
 router.post('/login', function(req, res, next) {
@@ -29,8 +36,13 @@ router.post('/login', function(req, res, next) {
 
     const tokenAcceso = generarTokenAcceso(usuario);
     const tokenRefresco = jwt.sign(usuario, process.env.REFRESCO_TOKEN_SECRETO);
-    tokensRefresco.push(tokenRefresco); // cambiar a mongoDB
-    res.json({ tokenAcceso: tokenAcceso, tokenRefresco: tokenRefresco});
+
+    //guardamos el tokenRefresco en la db
+    let tokenRefrescodb = new db.RefreshTokenJWT({token: tokenRefresco});
+    tokenRefrescodb.save(function(err) {
+        if(err) res.sendStatus(500); // implementar algo mas seguro si es que no se guarda bien
+        res.json({ tokenAcceso: tokenAcceso, tokenRefresco: tokenRefresco});
+    })
 })
 
 function generarTokenAcceso(usuario) {
