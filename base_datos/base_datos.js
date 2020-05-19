@@ -17,10 +17,40 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
+//MODELOS
+
+
+//modelo de los tokens
 const refreshTokensJWTSchema = new mongoose.Schema( {
     token: String
 }); // los tokens de refresco de JWT (ver autenticacion.js)
 
 const RefreshTokenJWT = mongoose.model('RefreshTokenJWT', refreshTokensJWTSchema);
 
-module.exports = {RefreshTokenJWT};
+
+//modelos de los usuarios
+const usuarioSchema = new mongoose.Schema( {
+    nombre: { //el nombre formal del usuario
+        type: String 
+    },
+    usuario: { // el nombre que se usa pal login
+        type: String, 
+        unique: true,
+        required: true
+    },
+    password: { // la clave
+        type: String,
+        required: true
+    },
+    fecha_creacion: { // fecha en la que se creo el usuario
+        type: Date, 
+        default: Date.now
+    }
+     
+}, { strict: false } ); // strict false para meter login externo despues
+
+const Usuario = mongoose.model("Usuario", usuarioSchema);
+
+//TODO: ingresar modelo de la base de datos del negocio
+
+module.exports = {RefreshTokenJWT, Usuario};
