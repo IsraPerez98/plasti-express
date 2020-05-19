@@ -1,7 +1,4 @@
-//Import the mongoose module
 const mongoose = require('mongoose');
-
-//Set up default mongoose connection
 
 //datos de esto se escriben en el archivo .env, ver documentacion dotenv'
 //var mongoDB = `mongodb://${process.env.MONGODB_USUARIO}:${process.env.MONGODB_CONTRASENA}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PUERTO}/${process.env.MONGODB_DATABASE}`;
@@ -20,7 +17,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 //MODELOS
 
 
-//modelo de los tokens
+//modelo de los tokens de refresco
 const refreshTokensJWTSchema = new mongoose.Schema( {
     token: String
 }); // los tokens de refresco de JWT (ver autenticacion.js)
@@ -28,7 +25,7 @@ const refreshTokensJWTSchema = new mongoose.Schema( {
 const RefreshTokenJWT = mongoose.model('RefreshTokenJWT', refreshTokensJWTSchema);
 
 
-//modelos de los usuarios
+//modelo de los usuarios
 const usuarioSchema = new mongoose.Schema( {
     nombre: { //el nombre formal del usuario
         type: String 

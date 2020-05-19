@@ -7,7 +7,7 @@ const passport = require('passport');
 
 
 const indexRouter = require('./routes/index');
-const autenticacion = require('./routes/autenticacion');
+const autenticacion = require('./routes/registro_login');
 //var usersRouter = require('./routes/users');
 
 const app = express();

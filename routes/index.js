@@ -1,8 +1,7 @@
 const express = require('express');
-//const base = require('./base_datos.js');
 const router = express.Router();
 
-const jwt = require('jsonwebtoken');
+const autenticarToken = require('../autenticacion/authToken.js');
         
 const info_prueba = [
     {
@@ -23,24 +22,6 @@ router.get('/prueba/', autenticarToken , function(req, res, next) {
     //return res.json(info_prueba);
     //return res.send('Received a GET HTTP method');
 });
-
-
-
-function autenticarToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token == null) return res.sendStatus(401); // sin token, no autorizado
-
-    jwt.verify(token, process.env.ACCESO_TOKEN_SECRETO, function(err, usuario) {
-        if (err) {
-            console.log(err);
-            return res.sendStatus(403) // sin permisos, no autorizado
-        }
-        req.usuario = usuario;
-        next();
-    })
-}
 
 
 module.exports = router;

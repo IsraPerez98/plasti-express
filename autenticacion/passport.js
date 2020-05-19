@@ -14,19 +14,20 @@ passport.deserializeUser((id,done) =>{ // retorna un usuario dado un id
 })
 
 passport.use( 
-    new LocalStrategy( {
+    new LocalStrategy( { // indicamos que vamos a almacenar los datos de forma local
+        //para el login necesitamos el usuario y contraseña
         usernameField: "usuario",
         passwordField: "password"
     }, 
     (nombre_usuario, password, done) => {
+        //console.log("info usuario entrante: ", nombre_usuario, " ", password);
         //encontrar usuario en la db
-        console.log("info usuario entrante: ", nombre_usuario, " ", password);
         db.Usuario.findOne({ usuario: nombre_usuario })
         .then(usuario => {
             
-            if(!usuario) { // si no existe el usuario
-                return done(null, false, "Usuario no existente" )
-            } else { // retornamos un usuario ya creado
+            if(!usuario) { // si no se encuentra el usuario
+                return done(null, false, "Usuario no existente" );
+            } else { // encontramos un usuario con el mismo nombre
                 // buscamos que los hash de las contraseñas sean iguales
                 bcrypt.compare(password, usuario.password, (err, son_iguales) => {
                     if (err) throw err;

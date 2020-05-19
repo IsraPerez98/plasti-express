@@ -2,50 +2,49 @@ const express = require("express");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 
-const db = require("../base_datos/base_datos.js");
-const passport = require("../autenticacion/passport.js");
-const autenticarToken = require('../autenticacion/authToken.js');
+const db = require("../base_datos/base_datos.js"); // este archivo tiene el modelo del usuario como se almacena el la DB
+const passport = require("../autenticacion/passport.js"); // este archivo tiene la config de como se procesa el login del usuario y como se busca en la DB y se compara las constraseñas
+const autenticarToken = require('../autenticacion/authToken.js'); // este archivo tiene una funcion para comprobar que el token que entrega un usuario es valido
 
 const router = express.Router();
 
-router.post("/token", function (req, res) {
-    const tokenRefresco = req.body.token;
+router.post("/token", function (req, res) { // genera un token de acceso nuevo para el usuario
+    const tokenRefresco = req.body.token; // el usuario entrega el token de refresco
     if (tokenRefresco == null) return res.sendStatus(401);
-    //if (!tokensRefresco.includes(tokenRefresco)) return res.sendStatus(403);
     const query = db.RefreshTokenJWT.find({ token: tokenRefresco }); // llamamos a la base mongoDB para ver si el token de refresco es valido
     query.exec(function (err, docs) {
         if (err) return res.sendStatus(500); // si el sv no conecta tiramos err 500
         if (docs.length == 0) return res.sendStatus(403); // si no se encuentra ningun token igual en la db, es invalido
-        jwt.verify(tokenRefresco, process.env.REFRESCO_TOKEN_SECRETO, function (
+        
+        jwt.verify(tokenRefresco, process.env.REFRESCO_TOKEN_SECRETO, function ( // comprobamos que el token es valido, con el token del archivo .env
             err,
             usuario
         ) {
             // generamos un nuevo token de acceso
             if (err) return res.sendStatus(403);
             const tokenAcceso = generarTokenAcceso({ nombre: usuario.nombre });
-            res.json({ tokenAcceso: tokenAcceso });
+            res.json({ tokenAcceso: tokenAcceso }); // se lo enviamos al usuario
         });
     });
 });
 
-router.delete("/logout", function (req, res) {
-    db.RefreshTokenJWT.deleteOne({ token: req.body.token }, function (err) {
-        // borramos el token de la base de datos
-
+router.delete("/logout", function (req, res) { 
+    // al momento de hacer logout se invalida el token de refresco
+    db.RefreshTokenJWT.deleteOne({ token: req.body.token }, function (err) { // borramos el token de la base de datos
         if (err) return res.sendStatus(500); // implementar algo mejor para estos errores
         res.sendStatus(204);
     });
 });
 
-router.post("/login", function (req, res, next) {
-    passport.authenticate("local", function (err, usuario, info) {
-        // llamamos a passport para ver si los datos q ingresa el usuario son validos
-        console.log("return passport:", err, usuario, info);
+router.post("/login", function (req, res, next) { // el usuario intenta logearse con su usuario y contraseña
+    passport.authenticate("local", function (err, usuario, info) { // pasamos la info a passport (ver archivo autenticacion/passport.js)
+    
+        //console.log("return passport:", err, usuario, info);
         if (err) {
             return res.status(500).send({ errors: err });
         }
 
-        if (!usuario) {
+        if (!usuario) { // si passport no devuelve un usuario
             return res
                 .status(400)
                 .send({ errors: "Usuario no valido", info: info });
@@ -56,9 +55,9 @@ router.post("/login", function (req, res, next) {
                 return res.status(500).send({ errors: err });
             }
             // aqui tenemos toda la info del usuario basado en base_datos.Usuario en usuario
-            console.log("info usuario", usuario);
+            //console.log("info usuario", usuario);
 
-            const datos_usuarios_jwt = {
+            const datos_usuarios_jwt = { // los datos del usuario que iran en los tokens
                 nombre: usuario.nombre,
                 usuario: usuario.usuario,
             };
@@ -68,14 +67,6 @@ router.post("/login", function (req, res, next) {
             const tokenRefresco = jwt.sign(
                 datos_usuarios_jwt,
                 process.env.REFRESCO_TOKEN_SECRETO
-            );
-            console.log(
-                "login: ",
-                datos_usuarios_jwt,
-                "token acceso: ",
-                tokenAcceso,
-                " token refresco: ",
-                tokenRefresco
             );
 
             //guardamos el token de refreso en monogodb
@@ -95,32 +86,21 @@ router.post("/login", function (req, res, next) {
             });
         });
     })(req, res, next);
-
-    /*
-    const nombre_usuario = req.body.usuario;
-    const usuario = {nombre: nombre_usuario};
-
-    const tokenAcceso = generarTokenAcceso(usuario);
-    const tokenRefresco = jwt.sign(usuario, process.env.REFRESCO_TOKEN_SECRETO);
-
-    //guardamos el tokenRefresco en la db
-    let tokenRefrescodb = new db.RefreshTokenJWT({token: tokenRefresco});
-    tokenRefrescodb.save(function(err) {
-        if(err) res.sendStatus(500); // implementar algo mas seguro si es que no se guarda bien
-        res.json({ tokenAcceso: tokenAcceso, tokenRefresco: tokenRefresco});
-    })
-    */
 });
 
-//router.post("/registrar", function (req, res, next) { // reemplazar para crear usuario sin problemas
-router.post("/registrar", autenticarToken, function (req, res, next) {
 
-    const nuevoUsuario = new db.Usuario({
+router.post("/registrar", autenticarToken, function (req, res, next) {
+    //funcion para crear un nuevo usuario, se requiere que un usuario anterior registre a otro
+    //para crear el usuario inicial, cambiar a MODO_INSEGURO=true en archivo .env
+    //ver archivo (autenticacion/authToken.js)
+
+    const nuevoUsuario = new db.Usuario({ // creamos el nuevo usuario en mongoose
         usuario: req.body.usuario,
         nombre: req.body.nombre,
         password: req.body.password,
     });
-    //ponemos el hash a la clave antes de guardarla en la DB, por seguridad
+    //por seguridad la contraseña no se guarda como texto simple, se aplica criptografia
+    //ponemos el hash a la clave antes de guardarla en la DB
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(nuevoUsuario.password, salt, (err, hash) => {
             if (err) throw err;
@@ -128,20 +108,18 @@ router.post("/registrar", autenticarToken, function (req, res, next) {
             nuevoUsuario
                 .save()
                 .then((usuario) => {
-                    return res.status(200); //OK
-                    //return done(null, usuario); // retornamos el nuevo usuario creado
+                    return res.status(200).send("Usuario Creado"); //OK
                 })
                 .catch((err) => {
                     return res.status(500).send(err);
-                    //return done(null, false, { message: err });
                 });
         });
     });
 });
 
-function generarTokenAcceso(usuario) {
+function generarTokenAcceso(usuario) {  // funcion que genera nuevo token de acceso dado los datos de un usuario
     return jwt.sign(usuario, process.env.ACCESO_TOKEN_SECRETO, {
-        expiresIn: "15m",
+        expiresIn: "15m", // expira en 15 minutos
     });
 }
 
