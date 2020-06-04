@@ -54,9 +54,106 @@ const usuarioSchema = new mongoose.Schema( {
 
 const Usuario = mongoose.model("Usuario", usuarioSchema);
 
-//TODO: ingresar modelo de la base de datos del negocio
+//modelo de la base de datos del negocio
 
+const materialSchema = new mongoose.Schema( { 
+    nombre: String,
+});
 
+const unidadMedidaSchema = new mongoose.Schema( {
+    nombre: String,
+} );
 
+const productoSchema = new mongoose.Schema({
+    nombre: String,
+    material: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Material"}
+    ],
+    precio_venta: Number,
+    contenido: String,
+    unidadMedida: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "Unidad de Medida" }
+    ],
+});
+
+const registroCompraSchema = new mongoose.Schema({
+    compra: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Compra"}
+    ],
+    producto: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Producto"}
+    ],
+    cantidad: Number,
+    precio: Number,
+});
+
+const vendeSchema = new mongoose.Schema({
+    cliente: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Cliente"}
+    ],
+    fecha: Date,
+});
+
+const registroVendeSchema = new mongoose.Schema({
+    producto: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Producto"}
+    ],
+    vende: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Vende"}
+    ],
+    cantidad: Number,
+});
+
+const compraSchema = new mongoose.Schema({
+    proveedor: [
+        {type: mongoose.Schema.Types.ObjectId, ref: "Proveedor"}
+    ],
+    fecha: Date,
+});
+
+const clienteSchema = new mongoose.Schema({
+    _id: false,
+    rut: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    nombre: String,
+    telefono: String,
+    email: String,
+    direccion: String,
+});
+
+const proveedorSchema = new mongoose.Schema({
+    _id: false,
+    rut: {
+        type: String,
+        required: false,
+        unique: true,
+    },
+    nombre: String,
+    telefono: String,
+    email: String,
+    direccion: String,
+    pagina_web: String,
+});
+
+const Material = mongoose.model("Material", materialSchema);
+
+const UnidadMedida = mongoose.model("Unidad de Medida", unidadMedidaSchema);
+
+const Producto = mongoose.model("Producto", productoSchema);
+
+const registroCompra = mongoose.model("Registro Compra", registroCompraSchema);
+
+const Vende = mongoose.model("Vende", vendeSchema);
+
+const RegistroVende = mongoose.model("Registro Vende", registroVendeSchema);
+
+const Compra = mongoose.model("Compra", compraSchema);
+
+const Cliente = mongoose.model("Cliente", clienteSchema);
+
+const proveedor = mongoose.model("Proveedor", proveedorSchema);
 
 module.exports = {RefreshTokenJWT, Usuario};
