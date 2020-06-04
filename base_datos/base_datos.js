@@ -19,7 +19,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 //modelo de los tokens de refresco
 const refreshTokensJWTSchema = new mongoose.Schema( {
-    _id: false,
     token: {
         type: String,
         unique: true,
@@ -32,7 +31,6 @@ const RefreshTokenJWT = mongoose.model('RefreshTokenJWT', refreshTokensJWTSchema
 
 //modelo de los usuarios
 const usuarioSchema = new mongoose.Schema( {
-    _id: false, // el id principal es el usuario, sin ID de la BD
     nombre: { //el nombre formal del usuario
         type: String 
     },
@@ -112,7 +110,6 @@ const compraSchema = new mongoose.Schema({
 });
 
 const clienteSchema = new mongoose.Schema({
-    _id: false,
     rut: {
         type: String,
         required: true,
@@ -125,7 +122,6 @@ const clienteSchema = new mongoose.Schema({
 });
 
 const proveedorSchema = new mongoose.Schema({
-    _id: false,
     rut: {
         type: String,
         required: false,
