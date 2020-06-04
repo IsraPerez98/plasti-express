@@ -144,7 +144,7 @@ const UnidadMedida = mongoose.model("Unidad de Medida", unidadMedidaSchema);
 
 const Producto = mongoose.model("Producto", productoSchema);
 
-const registroCompra = mongoose.model("Registro Compra", registroCompraSchema);
+const RegistroCompra = mongoose.model("Registro Compra", registroCompraSchema);
 
 const Vende = mongoose.model("Vende", vendeSchema);
 
@@ -154,6 +154,18 @@ const Compra = mongoose.model("Compra", compraSchema);
 
 const Cliente = mongoose.model("Cliente", clienteSchema);
 
-const proveedor = mongoose.model("Proveedor", proveedorSchema);
+const Proveedor = mongoose.model("Proveedor", proveedorSchema);
 
-module.exports = {RefreshTokenJWT, Usuario};
+module.exports = {
+    RefreshTokenJWT,
+    Usuario,
+    Material,
+    UnidadMedida,
+    Producto,
+    RegistroCompra,
+    Vende,
+    RegistroVende,
+    Compra,
+    Cliente,
+    Proveedor,
+};
