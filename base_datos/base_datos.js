@@ -19,7 +19,12 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 //modelo de los tokens de refresco
 const refreshTokensJWTSchema = new mongoose.Schema( {
-    token: String
+    _id: false,
+    token: {
+        type: String,
+        unique: true,
+        required: true,
+    }
 }); // los tokens de refresco de JWT (ver autenticacion.js)
 
 const RefreshTokenJWT = mongoose.model('RefreshTokenJWT', refreshTokensJWTSchema);
@@ -27,6 +32,7 @@ const RefreshTokenJWT = mongoose.model('RefreshTokenJWT', refreshTokensJWTSchema
 
 //modelo de los usuarios
 const usuarioSchema = new mongoose.Schema( {
+    _id: false, // el id principal es el usuario, sin ID de la BD
     nombre: { //el nombre formal del usuario
         type: String 
     },
@@ -49,5 +55,8 @@ const usuarioSchema = new mongoose.Schema( {
 const Usuario = mongoose.model("Usuario", usuarioSchema);
 
 //TODO: ingresar modelo de la base de datos del negocio
+
+
+
 
 module.exports = {RefreshTokenJWT, Usuario};

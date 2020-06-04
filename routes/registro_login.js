@@ -47,7 +47,7 @@ router.post("/login", function (req, res, next) { // el usuario intenta logearse
         if (!usuario) { // si passport no devuelve un usuario
             return res
                 .status(400)
-                .send({ errors: "Usuario no valido", info: info });
+                .send({ errors: "Usuario no valido", info: {message: info} });
         }
 
         req.logIn(usuario, function (err) {
