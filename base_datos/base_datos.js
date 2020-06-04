@@ -71,7 +71,7 @@ const productoSchema = new mongoose.Schema({
     ],
     precio_venta: Number,
     contenido: String,
-    unidadMedida: [
+    unidad_medida: [
         { type: mongoose.Schema.Types.ObjectId, ref: "Unidad de Medida" }
     ],
 });
