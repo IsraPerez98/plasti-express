@@ -28,7 +28,7 @@ router.post('/compra/', autenticarToken , function(req, res, next) {
             console.log(err);
             return res.status(500).send(err);
         };
-        if(proveedor_obj == null) return res.status(400).send("Proveedor ", proveedor, " no existe en la base de datos");
+        if(proveedor_obj == null) return res.status(400).send("Proveedor " + proveedor + " no existe en la base de datos");
 
         //obtenemos el producto
         db.Producto.findById(producto, function(err, producto_obj) {
@@ -36,7 +36,7 @@ router.post('/compra/', autenticarToken , function(req, res, next) {
                 console.log(err);
                 return res.status(500).send(err);
             };
-            if(producto_obj == null) return res.status(400).send("Producto ", producto, " no existe en la base de datos");
+            if(producto_obj == null) return res.status(400).send("Producto " + producto + " no existe en la base de datos");
 
             //creamos el obj Compra
             const compra_nueva = new db.Compra({
