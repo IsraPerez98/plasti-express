@@ -64,48 +64,32 @@ const unidadMedidaSchema = new mongoose.Schema( {
 
 const productoSchema = new mongoose.Schema({
     nombre: String,
-    material: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Material"}
-    ],
+    material: {type: mongoose.Schema.Types.ObjectId, ref: "Material"},
     precio_venta: Number,
     contenido: String,
-    unidad_medida: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "Unidad de Medida" }
-    ],
+    unidad_medida: { type: mongoose.Schema.Types.ObjectId, ref: "Unidad de Medida" },
 });
 
 const registroCompraSchema = new mongoose.Schema({
-    compra: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Compra"}
-    ],
-    producto: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Producto"}
-    ],
+    compra: {type: mongoose.Schema.Types.ObjectId, ref: "Compra"},
+    producto: {type: mongoose.Schema.Types.ObjectId, ref: "Producto"},
     cantidad: Number,
     precio: Number,
 });
 
 const vendeSchema = new mongoose.Schema({
-    cliente: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Cliente"}
-    ],
+    cliente: {type: mongoose.Schema.Types.ObjectId, ref: "Cliente"},
     fecha: Date,
 });
 
 const registroVendeSchema = new mongoose.Schema({
-    producto: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Producto"}
-    ],
-    vende: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Vende"}
-    ],
+    producto: {type: mongoose.Schema.Types.ObjectId, ref: "Producto"},
+    vende: {type: mongoose.Schema.Types.ObjectId, ref: "Vende"},
     cantidad: Number,
 });
 
 const compraSchema = new mongoose.Schema({
-    proveedor: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Proveedor"}
-    ],
+    proveedor: {type: mongoose.Schema.Types.ObjectId, ref: "Proveedor"},
     fecha: Date,
 });
 
