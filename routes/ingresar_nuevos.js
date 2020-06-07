@@ -56,7 +56,7 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
             console.log(err);
             return res.status(500).send(err);
         }
-        if(obj_mat == null) return res.status(400).send("Material " + material + " no existe en la base de datos");
+        if(obj_mat == null) return res.status(400).send(`Material ${material} no existe en la base de datos`);
         
         //console.log("obj mat: ", obj_mat);
         //console.log("unidad medida: ", unidad_medida);
@@ -67,7 +67,7 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
                 console.log(err2);
                 return res.status(500).send(err2);
             }
-            if(obj_medida == null) return res.status(400).send("Unidad de medida " + unidad_medida + " no existe en la base de datos");
+            if(obj_medida == null) return res.status(400).send(`Unidad de medida ${unidad_medida} no existe en la base de datos`);
 
             // creamos el nuevo producto
             const producto_nuevo = new db.Producto({
