@@ -56,7 +56,7 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
             console.log(err);
             return res.status(500).send(err);
         }
-        if(obj_mat == null) res.status(400).send("Material", material, " no existe en la base de datos");
+        if(obj_mat == null) return res.status(400).send("Material", material, " no existe en la base de datos");
 
         //buscamos que la unidad de medida exista en la db
         db.UnidadMedida.findOne({nombre: unidad_medida}, function(err2, obj_medida) {
