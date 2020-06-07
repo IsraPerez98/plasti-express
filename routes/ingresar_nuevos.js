@@ -37,34 +37,37 @@ router.post('/unidadmedida/', autenticarToken , function(req, res, next) {
 router.post('/producto/', autenticarToken , function(req, res, next) {
     // nuevo producto
     const nombre = req.body.nombre; // el nombre del producto
-    const material = req.body.material;
+    const material = req.body.material; // el objectID del material
     const precio_venta = req.body.precio;
     const contenido = req.body.contenido;
-    const unidad_medida = req.body.unidad_medida;
+    const unidad_medida = req.body.unidad_medida; // el objectID de la medida
 
     if (nombre == null) return res.status(400).send("Falta el nombre del producto");
-    if (material == null) return res.status(400).send("Falta el material");
+    if (material == null) return res.status(400).send("Falta el objectID del material");
     if (precio_venta == null) return res.status(400).send("Falta el precio de venta");
-    if (unidad_medida == null) return res.status(400).send("Falta la unidad de medida");
+    if (unidad_medida == null) return res.status(400).send("Falta el objectID de la unidad de medida");
 
     // el precio debe ser un numero
     if(isNaN(precio_venta)) return res.status(400).send("El precio debe ser un numero");
 
     //buscamos que el material exista en la db
-    db.Material.findOne({nombre: material}, function(err, obj_mat) {
+    db.Material.findById(material, function(err, obj_mat) {
         if(err) {
             console.log(err);
             return res.status(500).send(err);
         }
-        if(obj_mat == null) return res.status(400).send("Material", material, " no existe en la base de datos");
-
+        if(obj_mat == null) return res.status(400).send("Material " + material + " no existe en la base de datos");
+        
+        //console.log("obj mat: ", obj_mat);
+        //console.log("unidad medida: ", unidad_medida);
+        
         //buscamos que la unidad de medida exista en la db
-        db.UnidadMedida.findOne({nombre: unidad_medida}, function(err2, obj_medida) {
+        db.UnidadMedida.findById(unidad_medida, function(err2, obj_medida) {
             if(err2) {
                 console.log(err2);
                 return res.status(500).send(err2);
             }
-            if(obj_medida == null) res.status(400).send("Unidad de medida ", unidad_medida, " no existe en la base de datos");
+            if(obj_medida == null) return res.status(400).send("Unidad de medida " + unidad_medida + " no existe en la base de datos");
 
             // creamos el nuevo producto
             const producto_nuevo = new db.Producto({
@@ -82,7 +85,7 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
                 }
                 return res.sendStatus(200); // OK
             } );
-        })
+        });
     });
 
 });
