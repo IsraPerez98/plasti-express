@@ -77,4 +77,72 @@ router.post('/compra/', autenticarToken , function(req, res, next) {
 });
 
 
+router.post('/venta/', autenticarToken , function(req, res, next) {
+    // nueva venta hecha
+    const cliente = req.body.cliente; // objectID del cliente
+    const producto = req.body.producto;  // objectID del producto
+    const cantidad = req.body.cantidad;
+
+    if(cliente == null) return res.status(400).send("Falta el objectID del cliente");
+    if(producto == null) return res.status(400).send("Falta el objectID del producto");
+    if(cantidad == null) return res.send(400).send("Falta la cantidad de la compra");
+
+    if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
+
+    //creamos la instancia de "Vende" y "Registro Vende"
+
+    //obtenemos el cliente
+    db.Cliente.findById(cliente, function (err, cliente_obj) { // buscamos el cliente por id
+        if(err) {
+            console.log(err);
+            return res.status(500).send(err);
+        };
+        if(cliente_obj == null) return res.status(400).send(`Cliente ${cliente} no existe en la base de datos`);
+
+        //obtenemos el producto
+        db.Producto.findById(producto, function(err, producto_obj) {
+            if(err){
+                console.log(err);
+                return res.status(500).send(err);
+            };
+            if(producto_obj == null) return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
+
+            //creamos el obj Vende
+            const vende_nuevo = new db.Vende({
+                cliente: cliente_obj,
+                fecha: Date.now(), // fecha actual
+            });
+
+            //guardamos la venta en la db
+            vende_nuevo.save(function (err) {
+                if(err) {
+                    console.log(err);
+                    return res.status(500).send(err);
+                }
+
+                //generamos el nuevo registro de vende
+                const registro_vende_nuevo = new db.RegistroVende({
+                    vende: vende_nuevo,
+                    producto: producto_obj,
+                    cantidad: cantidad,
+                });
+
+                //guardamos el registro en la db
+                registro_vende_nuevo.save(function(err){
+                    if(err) {
+                        console.log(err);
+                        return res.status(500).send(err);
+                    }
+
+                    return res.sendStatus(200); //OK
+                });
+
+            });
+        });
+
+    });
+
+});
+
+
 module.exports = router;
