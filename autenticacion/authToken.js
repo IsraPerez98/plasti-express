@@ -3,8 +3,6 @@ const jwt = require("jsonwebtoken");
 
 function autenticarToken(req, res, next) { // comprobar si un token enviado por el usuario es valido
 
-    if(process.env.MODO_INSEGURO === "true") return next(); // modo inseguro se acepta todo
-
     const authHeader = req.headers["authorization"]; // buscamos el token en el header
     const token = authHeader && authHeader.split(" ")[1];
 

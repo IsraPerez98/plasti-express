@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 
-const db = require("../base_datos/base_datos.js"); // este archivo tiene el modelo del usuario como se almacena el la DB
+const db_usuarios = require("../base_datos/usuarios.js"); // este archivo tiene el modelo del usuario como se almacena el la DB
 const passport = require("../autenticacion/passport.js"); // este archivo tiene la config de como se procesa el login del usuario y como se busca en la DB y se compara las constraseñas
 const autenticarToken = require('../autenticacion/authToken.js'); // este archivo tiene una funcion para comprobar que el token que entrega un usuario es valido
 
@@ -11,10 +11,10 @@ const router = express.Router();
 router.post("/token", function (req, res) { // genera un token de acceso nuevo para el usuario
     const tokenRefresco = req.body.token; // el usuario entrega el token de refresco
     if (tokenRefresco == null) return res.sendStatus(401);
-    const query = db.RefreshTokenJWT.find({ token: tokenRefresco }); // llamamos a la base mongoDB para ver si el token de refresco es valido
+    const query = db_usuarios.RefreshTokenJWT.find({ token: tokenRefresco }); // llamamos a la base mongoDB para ver si el token de refresco es valido
     query.exec(function (err, docs) {
         if (err) return res.sendStatus(500); // si el sv no conecta tiramos err 500
-        if (docs.length == 0) return res.sendStatus(403); // si no se encuentra ningun token igual en la db, es invalido
+        if (docs.length == 0) return res.sendStatus(403); // si no se encuentra ningun token igual en la db_usuarios, es invalido
         
         jwt.verify(tokenRefresco, process.env.REFRESCO_TOKEN_SECRETO, function ( // comprobamos que el token es valido, con el token del archivo .env
             err,
@@ -30,7 +30,7 @@ router.post("/token", function (req, res) { // genera un token de acceso nuevo p
 
 router.delete("/logout", function (req, res) { 
     // al momento de hacer logout se invalida el token de refresco
-    db.RefreshTokenJWT.deleteOne({ token: req.body.token }, function (err) { // borramos el token de la base de datos
+    db_usuarios.RefreshTokenJWT.deleteOne({ token: req.body.token }, function (err) { // borramos el token de la base de datos
         if (err) return res.sendStatus(500); // implementar algo mejor para estos errores
         res.sendStatus(204);
     });
@@ -70,7 +70,7 @@ router.post("/login", function (req, res, next) { // el usuario intenta logearse
             );
 
             //guardamos el token de refreso en monogodb
-            let tokenRefrescodb = new db.RefreshTokenJWT({
+            let tokenRefrescodb = new db_usuarios.RefreshTokenJWT({
                 token: tokenRefresco,
             });
             tokenRefrescodb.save(function (err) {
@@ -94,7 +94,7 @@ router.post("/registrar", autenticarToken, function (req, res, next) {
     //para crear el usuario inicial, cambiar a MODO_INSEGURO=true en archivo .env
     //ver archivo (autenticacion/authToken.js)
 
-    const nuevoUsuario = new db.Usuario({ // creamos el nuevo usuario en mongoose
+    const nuevoUsuario = new db_usuarios.Usuario({ // creamos el nuevo usuario en mongoose
         usuario: req.body.usuario,
         nombre: req.body.nombre,
         password: req.body.password,

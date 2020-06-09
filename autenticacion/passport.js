@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const db = require('../base_datos/base_datos.js');
+const db_usuarios = require('../base_datos/usuarios.js');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -8,7 +8,7 @@ passport.serializeUser((usuario,done) =>{ // retorna un id, dado un usuario
 })
 
 passport.deserializeUser((id,done) =>{ // retorna un usuario dado un id
-    db.Usuario.findById(id, (err,usuario) => { // buscamos en la base de datos el id
+ db_usuarios.Usuario.findById(id, (err,usuario) => { // buscamos en la base de datos el id
         done(err, usuario);
     })
 })
@@ -21,8 +21,8 @@ passport.use(
     }, 
     (nombre_usuario, password, done) => {
         //console.log("info usuario entrante: ", nombre_usuario, " ", password);
-        //encontrar usuario en la db
-        db.Usuario.findOne({ usuario: nombre_usuario })
+        //encontrar usuario en la db_usuarios
+     db_usuarios.Usuario.findOne({ usuario: nombre_usuario })
         .then(usuario => {
             
             if(!usuario) { // si no se encuentra el usuario
