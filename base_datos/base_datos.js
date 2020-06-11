@@ -28,33 +28,10 @@ const unidadMedidaSchema = new mongoose.Schema( {
 
 const productoSchema = new mongoose.Schema({
     nombre: String,
-    material: {type: mongoose.Schema.Types.ObjectId, ref: "Material"},
+    material: materialSchema,
     precio_venta: Number,
     contenido: String,
-    unidad_medida: { type: mongoose.Schema.Types.ObjectId, ref: "Unidad de Medida" },
-});
-
-const registroCompraSchema = new mongoose.Schema({
-    compra: {type: mongoose.Schema.Types.ObjectId, ref: "Compra"},
-    producto: {type: mongoose.Schema.Types.ObjectId, ref: "Producto"},
-    cantidad: Number,
-    precio: Number,
-});
-
-const vendeSchema = new mongoose.Schema({
-    cliente: {type: mongoose.Schema.Types.ObjectId, ref: "Cliente"},
-    fecha: Date,
-});
-
-const registroVendeSchema = new mongoose.Schema({
-    producto: {type: mongoose.Schema.Types.ObjectId, ref: "Producto"},
-    vende: {type: mongoose.Schema.Types.ObjectId, ref: "Vende"},
-    cantidad: Number,
-});
-
-const compraSchema = new mongoose.Schema({
-    proveedor: {type: mongoose.Schema.Types.ObjectId, ref: "Proveedor"},
-    fecha: Date,
+    unidad_medida: unidadMedidaSchema,
 });
 
 const clienteSchema = new mongoose.Schema({
@@ -81,6 +58,33 @@ const proveedorSchema = new mongoose.Schema({
     direccion: String,
     pagina_web: String,
 });
+
+const compraSchema = new mongoose.Schema({
+    proveedor: proveedorSchema,
+    fecha: Date,
+});
+
+const registroCompraSchema = new mongoose.Schema({
+    compra: compraSchema,
+    producto: productoSchema,
+    cantidad: Number,
+    precio: Number,
+});
+
+const vendeSchema = new mongoose.Schema({
+    cliente: clienteSchema,
+    fecha: Date,
+});
+
+const registroVendeSchema = new mongoose.Schema({
+    producto: productoSchema,
+    vende: vendeSchema,
+    cantidad: Number,
+});
+
+
+
+
 
 const Material = mongoose.model("Material", materialSchema);
 
