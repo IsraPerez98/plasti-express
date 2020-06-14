@@ -73,7 +73,11 @@ if(process.env.CREAR_USUARIO_POR_DEFECTO === "true"){ // creamos un usuario por 
                     console.log("Usuario creado: " , nuevoUsuario.usuario);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    if (err.name === 'MongoError' && err.code === 11000) {
+                        console.log("Usuario ", nuevoUsuario.usuario, " ya existe en la base de datos.")
+                    } else {
+                        console.log(err);
+                    }
                 });
         });
     });
