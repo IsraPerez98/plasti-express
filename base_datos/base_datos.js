@@ -81,6 +81,7 @@ const registroVendeSchema = new mongoose.Schema({
     producto: productoSchema,
     vende: vendeSchema,
     cantidad: Number,
+    precio: Number,
 });
 
 

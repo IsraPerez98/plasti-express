@@ -12,10 +12,10 @@ router.post('/compra/', autenticarToken , function(req, res, next) {
     const cantidad = req.body.cantidad;
     const precio = req.body.precio;
 
-    if(proveedor == null) return res.status(400).send("Falta el objectID del proveedor");
-    if(producto == null) return res.status(400).send("Falta el objectID del producto");
-    if(cantidad == null) return res.send(400).send("Falta la cantidad de la compra");
-    if(precio == null) return res.send(400).send("Falta el precio de la compra");
+    if(proveedor === null || proveedor === "") return res.status(400).send("Falta el objectID del proveedor");
+    if(producto === null || producto === "") return res.status(400).send("Falta el objectID del producto");
+    if(cantidad === null || cantidad === "") return res.send(400).send("Falta la cantidad de la compra");
+    if(precio === null || precio === "") return res.send(400).send("Falta el precio de la compra");
 
     if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
     if(isNaN(precio)) return res.status(400).send("El precio de la compra debe ser un numero");
@@ -28,7 +28,7 @@ router.post('/compra/', autenticarToken , function(req, res, next) {
             console.log(err);
             return res.status(500).send(err);
         };
-        if(proveedor_obj == null) return res.status(400).send(`Proveedor ${proveedor} no existe en la base de datos`);
+        if(proveedor_obj === null) return res.status(400).send(`Proveedor ${proveedor} no existe en la base de datos`);
 
         //obtenemos el producto
         db.Producto.findById(producto, function(err, producto_obj) {
@@ -36,7 +36,7 @@ router.post('/compra/', autenticarToken , function(req, res, next) {
                 console.log(err);
                 return res.status(500).send(err);
             };
-            if(producto_obj == null) return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
+            if(producto_obj === null) return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
 
             //creamos el obj Compra
             const compra_nueva = new db.Compra({
@@ -82,12 +82,15 @@ router.post('/venta/', autenticarToken , function(req, res, next) {
     const cliente = req.body.cliente; // objectID del cliente
     const producto = req.body.producto;  // objectID del producto
     const cantidad = req.body.cantidad;
+    const precio = req.body.precio;
 
-    if(cliente == null) return res.status(400).send("Falta el objectID del cliente");
-    if(producto == null) return res.status(400).send("Falta el objectID del producto");
-    if(cantidad == null) return res.send(400).send("Falta la cantidad de la compra");
+    if(cliente === null || cliente === "") return res.status(400).send("Falta el objectID del cliente");
+    if(producto === null || producto === "") return res.status(400).send("Falta el objectID del producto");
+    if(cantidad === null || cantidad === "") return res.send(400).send("Falta la cantidad de la venta");
+    if(precio === null || precio === "") return res.send(400).send("Falta el precio de la venta");
 
     if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
+    if(isNaN(precio)) return res.status(400).send("El precio de la venta debe ser un numero");
 
     //creamos la instancia de "Vende" y "Registro Vende"
 
@@ -97,7 +100,7 @@ router.post('/venta/', autenticarToken , function(req, res, next) {
             console.log(err);
             return res.status(500).send(err);
         };
-        if(cliente_obj == null) return res.status(400).send(`Cliente ${cliente} no existe en la base de datos`);
+        if(cliente_obj === null) return res.status(400).send(`Cliente ${cliente} no existe en la base de datos`);
 
         //obtenemos el producto
         db.Producto.findById(producto, function(err, producto_obj) {
@@ -105,7 +108,7 @@ router.post('/venta/', autenticarToken , function(req, res, next) {
                 console.log(err);
                 return res.status(500).send(err);
             };
-            if(producto_obj == null) return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
+            if(producto_obj === null) return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
 
             //creamos el obj Vende
             const vende_nuevo = new db.Vende({
@@ -125,6 +128,7 @@ router.post('/venta/', autenticarToken , function(req, res, next) {
                     vende: vende_nuevo,
                     producto: producto_obj,
                     cantidad: cantidad,
+                    precio: precio,
                 });
 
                 //guardamos el registro en la db
