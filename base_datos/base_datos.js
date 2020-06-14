@@ -32,6 +32,7 @@ const productoSchema = new mongoose.Schema({
     precio_venta: Number,
     contenido: String,
     unidad_medida: unidadMedidaSchema,
+    cantidad: Number,
 });
 
 const clienteSchema = new mongoose.Schema({
