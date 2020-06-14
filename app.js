@@ -6,7 +6,7 @@ const logger = require('morgan');
 const passport = require('passport');
 
 const autenticacion = require('./routes/registro_login');
-const api = require('./routes/api');
+const api_get = require('./routes/api_get');
 const ingresarNuevos = require('./routes/ingresar_nuevos');
 const transacciones = require('./routes/transacciones');
 //var usersRouter = require('./routes/users');
@@ -21,7 +21,7 @@ app.use(passport.session());
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/', api);
+app.use('/api/get/', api_get);
 app.use('/api/transaccion/', transacciones);
 app.use('/api/nuevo/', ingresarNuevos);
 app.use('/autenticacion/', autenticacion);
