@@ -39,7 +39,7 @@ const clienteSchema = new mongoose.Schema({
     rut: {
         type: String,
         required: true,
-        unique: true,
+        //unique: true, // da problemas con mongodb, revisar si es unico de forma manual al ingresar un nuevo cliente
     },
     nombre: String,
     telefono: String,
@@ -51,7 +51,7 @@ const proveedorSchema = new mongoose.Schema({
     rut: {
         type: String,
         required: false,
-        unique: true,
+        //unique: true, // da problemas con mongodb, revisar si es unico de forma manual al ingresar un nuevo proveedor
     },
     nombre: String,
     telefono: String,
@@ -67,9 +67,11 @@ const compraSchema = new mongoose.Schema({
 
 const registroCompraSchema = new mongoose.Schema({
     compra: compraSchema,
-    producto: productoSchema,
-    cantidad: Number,
-    precio: Number,
+    info: [{
+        producto: productoSchema,
+        cantidad: Number,
+        precio: Number,
+    }],
 });
 
 const vendeSchema = new mongoose.Schema({
@@ -78,10 +80,13 @@ const vendeSchema = new mongoose.Schema({
 });
 
 const registroVendeSchema = new mongoose.Schema({
-    producto: productoSchema,
+    
     vende: vendeSchema,
-    cantidad: Number,
-    precio: Number,
+    info: [{
+        producto: productoSchema,
+        cantidad: Number,
+        precio: Number,
+    }],
 });
 
 
