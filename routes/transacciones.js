@@ -16,8 +16,8 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
     [n].precio
     */
 
-    if(cliente === null || cliente === "") return res.status(400).send("Falta el objectID del cliente");
-    if(datos_productos === null || datos_productos.length === 0) return res.status(400).send("Faltan los datos de los productos vendidos");
+    if(!(cliente) || cliente === "") return res.status(400).send("Falta el objectID del cliente");
+    if(!(datos_productos) || datos_productos.length === 0) return res.status(400).send("Faltan los datos de los productos vendidos");
     
     
     //buscamos el cliente en la DB
@@ -28,7 +28,7 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
         return res.status(500).send(err);
     });
 
-    if(cliente_obj === null) return res.status(400).send(`Cliente ${cliente} no existe en la base de datos`);
+    if(!(cliente_obj)) return res.status(400).send(`Cliente ${cliente} no existe en la base de datos`);
 
     //console.log(cliente_obj);
 
@@ -54,9 +54,9 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
         const precio = datos.precio;
 
         //revisamos que los datos ingresados son validos
-        if(producto === null || producto === "") return res.status(400).send("Falta el objectID del producto");
-        if(cantidad === null || cantidad === "") return res.send(400).send("Falta la cantidad de la venta");
-        if(precio === null || precio === "") return res.send(400).send("Falta el precio de la venta");
+        if(!(producto) || producto === "") return res.status(400).send("Falta el objectID del producto");
+        if(!(cantidad) || cantidad === "") return res.send(400).send("Falta la cantidad de la venta");
+        if(!(precio) || precio === "") return res.send(400).send("Falta el precio de la venta");
 
         if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
         if(isNaN(precio)) return res.status(400).send("El precio de la venta debe ser un numero");
@@ -113,8 +113,8 @@ router.post('/compra/', autenticarToken , async function(req, res, next) {
     [n].precio
     */
 
-    if(proveedor === null || proveedor === "") return res.status(400).send("Falta el objectID del proveedor");
-    if(datos_productos === null || datos_productos.length === 0) return res.status(400).send("Faltan los datos de los productos comprados");
+    if(!(proveedor) || proveedor === "") return res.status(400).send("Falta el objectID del proveedor");
+    if(!(datos_productos) || datos_productos.length === 0) return res.status(400).send("Faltan los datos de los productos comprados");
 
     //buscamos al proveedor en la db
     const proveedor_obj = await db.Proveedor.findById(proveedor)
@@ -147,9 +147,9 @@ router.post('/compra/', autenticarToken , async function(req, res, next) {
         const precio = datos.precio;
 
         //revisamos que los datos ingresados son validos
-        if(producto === null || producto === "") return res.status(400).send("Falta el objectID del producto");
-        if(cantidad === null || cantidad === "") return res.send(400).send("Falta la cantidad de la venta");
-        if(precio === null || precio === "") return res.send(400).send("Falta el precio de la venta");
+        if(!(producto) || producto === "") return res.status(400).send("Falta el objectID del producto");
+        if(!(cantidad) || cantidad === "") return res.send(400).send("Falta la cantidad de la venta");
+        if(!(precio) || precio === "") return res.send(400).send("Falta el precio de la venta");
 
         if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
         if(isNaN(precio)) return res.status(400).send("El precio de la venta debe ser un numero");
