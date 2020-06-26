@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/token", function (req, res) { // genera un token de acceso nuevo para el usuario
     const tokenRefresco = req.body.token; // el usuario entrega el token de refresco
-    if (tokenRefresco == null) return res.sendStatus(401);
+    if (!(tokenRefresco)) return res.sendStatus(401);
     const query = db_usuarios.RefreshTokenJWT.find({ token: tokenRefresco }); // llamamos a la base mongoDB para ver si el token de refresco es valido
     query.exec(function (err, docs) {
         if (err) return res.sendStatus(500); // si el sv no conecta tiramos err 500
@@ -91,7 +91,6 @@ router.post("/login", function (req, res, next) { // el usuario intenta logearse
 
 router.post("/registrar", autenticarToken, function (req, res, next) {
     //funcion para crear un nuevo usuario, se requiere que un usuario anterior registre a otro
-    //para crear el usuario inicial, cambiar a MODO_INSEGURO=true en archivo .env
     //ver archivo (autenticacion/authToken.js)
 
     const nuevoUsuario = new db_usuarios.Usuario({ // creamos el nuevo usuario en mongoose

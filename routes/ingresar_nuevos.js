@@ -9,7 +9,7 @@ const db = require('../base_datos/base_datos');
 router.post('/material/', autenticarToken , function(req, res, next) {
     // nuevo material ingresado
     const nombre = req.body.nombre; // el nombre del material que ingresa el usuario
-    if (nombre == null) return res.status(400).send("Falta el nombre del material");
+    if (!(nombre)) return res.status(400).send("Falta el nombre del material");
     const material_nuevo = new db.Material({ nombre: nombre }); // se crea el nuevo objeto
     material_nuevo.save(function (err) { // se guarda en la db
         if (err) {
@@ -23,7 +23,7 @@ router.post('/material/', autenticarToken , function(req, res, next) {
 router.post('/unidadmedida/', autenticarToken , function(req, res, next) {
     // nueva unidad de medida
     const nombre = req.body.nombre; // el nombre de la unidad de medida
-    if (nombre == null) return res.status(400).send("Falta el nombre de la unidad de medida");
+    if (!(nombre)) return res.status(400).send("Falta el nombre de la unidad de medida");
     const medida_nueva = new db.UnidadMedida({ nombre: nombre }); // se crea el nuevo objeto
     medida_nueva.save(function (err) { // se guarda en la db
         if (err) {
@@ -42,10 +42,10 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
     const contenido = req.body.contenido;
     const unidad_medida = req.body.unidad_medida; // el objectID de la medida
 
-    if (nombre == null) return res.status(400).send("Falta el nombre del producto");
-    if (material == null) return res.status(400).send("Falta el objectID del material");
-    if (precio_venta == null) return res.status(400).send("Falta el precio de venta");
-    if (unidad_medida == null) return res.status(400).send("Falta el objectID de la unidad de medida");
+    if (!(nombre)) return res.status(400).send("Falta el nombre del producto");
+    if (!(material)) return res.status(400).send("Falta el objectID del material");
+    if (!(precio_venta)) return res.status(400).send("Falta el precio de venta");
+    if (!(unidad_medida)) return res.status(400).send("Falta el objectID de la unidad de medida");
 
     // el precio debe ser un numero
     if(isNaN(precio_venta)) return res.status(400).send("El precio debe ser un numero");
@@ -98,7 +98,7 @@ router.post('/cliente/', autenticarToken , function(req, res, next) {
     const email = req.body.email;
     const direccion = req.body.direccion;
 
-    if (rut == null) return res.status(400).send("Falta el rut del cliente");
+    if (!(rut)) return res.status(400).send("Falta el rut del cliente");
 
     const cliente_nuevo = new db.Cliente({ // se crea el nuevo objeto
         rut: rut,
@@ -124,7 +124,7 @@ router.post('/proveedor/', autenticarToken , function(req, res, next) {
     const email = req.body.email;
     const direccion = req.body.direccion;
 
-    if (rut == null) return res.status(400).send("Falta el rut del proveedor");
+    if (!(rut)) return res.status(400).send("Falta el rut del proveedor");
 
     const proveedor_nuevo = new db.Proveedor({ // se crea el nuevo objeto
         rut: rut,
