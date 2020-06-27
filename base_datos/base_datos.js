@@ -38,13 +38,14 @@ const productoSchema = new mongoose.Schema({
 const clienteSchema = new mongoose.Schema({
     rut: {
         type: String,
-        required: true,
+        required: false,
         //unique: true, // da problemas con mongodb, revisar si es unico de forma manual al ingresar un nuevo cliente
     },
     nombre: String,
     telefono: String,
     email: String,
     direccion: String,
+    local: String,
 });
 
 const proveedorSchema = new mongoose.Schema({

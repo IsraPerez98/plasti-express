@@ -97,8 +97,9 @@ router.post('/cliente/', autenticarToken , function(req, res, next) {
     const telefono = req.body.telefono;
     const email = req.body.email;
     const direccion = req.body.direccion;
+    const local = req.body.local;
 
-    if (!(rut)) return res.status(400).send("Falta el rut del cliente");
+    //if (!(rut)) return res.status(400).send("Falta el rut del cliente");
 
     const cliente_nuevo = new db.Cliente({ // se crea el nuevo objeto
         rut: rut,
@@ -106,6 +107,7 @@ router.post('/cliente/', autenticarToken , function(req, res, next) {
         telefono: telefono,
         email: email,
         direccion: direccion,
+        local: local,
     }); 
     cliente_nuevo.save(function (err) { // se guarda en la db
         if (err) {
