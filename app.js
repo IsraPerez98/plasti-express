@@ -7,6 +7,7 @@ const passport = require('passport');
 
 const autenticacion = require('./routes/registro_login');
 const api_get = require('./routes/api_get');
+const api_delete = require('./routes/api_delete');
 const ingresarNuevos = require('./routes/ingresar_nuevos');
 const transacciones = require('./routes/transacciones');
 //var usersRouter = require('./routes/users');
@@ -22,6 +23,7 @@ app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/get/', api_get);
+app.use('/api/delete', api_delete);
 app.use('/api/transaccion/', transacciones);
 app.use('/api/nuevo/', ingresarNuevos);
 app.use('/autenticacion/', autenticacion);
