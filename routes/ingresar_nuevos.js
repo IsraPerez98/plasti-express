@@ -125,6 +125,7 @@ router.post('/proveedor/', autenticarToken , function(req, res, next) {
     const telefono = req.body.telefono;
     const email = req.body.email;
     const direccion = req.body.direccion;
+    const pagina_web = req.body.pagina_web;
 
     if (!(rut)) return res.status(400).send("Falta el rut del proveedor");
 
@@ -134,6 +135,7 @@ router.post('/proveedor/', autenticarToken , function(req, res, next) {
         telefono: telefono,
         email: email,
         direccion: direccion,
+        pagina_web: pagina_web,
     }); 
     proveedor_nuevo.save(function (err) { // se guarda en la db
         if (err) {
