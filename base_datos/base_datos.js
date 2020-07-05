@@ -34,11 +34,11 @@ const unidadMedidaSchema = new mongoose.Schema( {
 
 const productoSchema = new mongoose.Schema({
     nombre: String,
+    cantidad: Number,
     material: String,
     precio_venta: Number,
     contenido: String,
     unidad_medida: String,
-    cantidad: Number,
 });
 
 const clienteSchema = new mongoose.Schema({

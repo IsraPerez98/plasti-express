@@ -99,6 +99,7 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
 router.post('/producto/', autenticarToken , function(req, res, next) {
     // nuevo producto
     const nombre = req.body.nombre; // el nombre del producto
+    const cantidad = req.body.cantidad; // la cantidad inicial
     const material = req.body.material; // el nombre del material
     const precio_venta = req.body.precio_venta;
     const contenido = req.body.contenido;
@@ -107,14 +108,17 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
     if (!(nombre)) return res.status(400).send("Falta el nombre del producto");
     //if (!(material)) return res.status(400).send("Falta el nombre del material");
     if (!(precio_venta)) return res.status(400).send("Falta el precio de venta");
+    if (!(cantidad)) return res.status(400).send("Falta la cantidad inicial del producto");
     //if (!(unidad_medida)) return res.status(400).send("Falta el nombre de la unidad de medida");
 
     // el precio debe ser un numero
     if(isNaN(precio_venta)) return res.status(400).send("El precio debe ser un numero");
+    if(isNaN(cantidad)) return res.status(400).send("La cantidad inicial debe ser un numero");
 
     // creamos el nuevo producto
     const producto_nuevo = new db.Producto({
         nombre: nombre,
+        cantidad: cantidad,
         material: material,
         precio_venta: precio_venta,
         contenido: contenido,
