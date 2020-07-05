@@ -18,20 +18,26 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 //modelo de la base de datos del negocio
 
+//material ahora se incluye directo dentro del producto
+/*
 const materialSchema = new mongoose.Schema( { 
     nombre: String,
 });
+*/
 
+//unidad de medida ahora se incluye directo dentro del producto
+/*
 const unidadMedidaSchema = new mongoose.Schema( {
     nombre: String,
 } );
+*/
 
 const productoSchema = new mongoose.Schema({
     nombre: String,
-    material: materialSchema,
+    material: String,
     precio_venta: Number,
     contenido: String,
-    unidad_medida: unidadMedidaSchema,
+    unidad_medida: String,
     cantidad: Number,
 });
 
@@ -94,9 +100,9 @@ const registroVendeSchema = new mongoose.Schema({
 
 
 
-const Material = mongoose.model("Material", materialSchema);
+//const Material = mongoose.model("Material", materialSchema);
 
-const UnidadMedida = mongoose.model("Unidad de Medida", unidadMedidaSchema);
+//const UnidadMedida = mongoose.model("Unidad de Medida", unidadMedidaSchema);
 
 const Producto = mongoose.model("Producto", productoSchema);
 
@@ -113,8 +119,6 @@ const Cliente = mongoose.model("Cliente", clienteSchema);
 const Proveedor = mongoose.model("Proveedor", proveedorSchema);
 
 module.exports = {
-    Material,
-    UnidadMedida,
     Producto,
     RegistroCompra,
     Vende,

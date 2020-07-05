@@ -6,6 +6,7 @@ const router = express.Router();
 const autenticarToken = require('../autenticacion/authToken.js');
 const db = require('../base_datos/base_datos');
 
+/*
 router.post('/material/', autenticarToken , function(req, res, next) {
     // nuevo material ingresado
     const nombre = req.body.nombre; // el nombre del material que ingresa el usuario
@@ -19,7 +20,9 @@ router.post('/material/', autenticarToken , function(req, res, next) {
         return res.sendStatus(200); //ok
     });
 });
+*/
 
+/*
 router.post('/unidadmedida/', autenticarToken , function(req, res, next) {
     // nueva unidad de medida
     const nombre = req.body.nombre; // el nombre de la unidad de medida
@@ -33,7 +36,9 @@ router.post('/unidadmedida/', autenticarToken , function(req, res, next) {
         return res.sendStatus(200); //ok
     });
 });
+*/
 
+/*
 router.post('/producto/', autenticarToken , function(req, res, next) {
     // nuevo producto
     const nombre = req.body.nombre; // el nombre del producto
@@ -89,6 +94,43 @@ router.post('/producto/', autenticarToken , function(req, res, next) {
     });
 
 });
+*/
+
+router.post('/producto/', autenticarToken , function(req, res, next) {
+    // nuevo producto
+    const nombre = req.body.nombre; // el nombre del producto
+    const material = req.body.material; // el nombre del material
+    const precio_venta = req.body.precio_venta;
+    const contenido = req.body.contenido;
+    const unidad_medida = req.body.unidad_medida; // el nombre de la medida
+
+    if (!(nombre)) return res.status(400).send("Falta el nombre del producto");
+    //if (!(material)) return res.status(400).send("Falta el nombre del material");
+    if (!(precio_venta)) return res.status(400).send("Falta el precio de venta");
+    //if (!(unidad_medida)) return res.status(400).send("Falta el nombre de la unidad de medida");
+
+    // el precio debe ser un numero
+    if(isNaN(precio_venta)) return res.status(400).send("El precio debe ser un numero");
+
+    // creamos el nuevo producto
+    const producto_nuevo = new db.Producto({
+        nombre: nombre,
+        material: material,
+        precio_venta: precio_venta,
+        contenido: contenido,
+        unidad_medida: unidad_medida,
+    });
+
+    producto_nuevo.save(function (err) { // se guarda en la db
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        return res.sendStatus(200); //ok
+    });
+});
+
+
 
 router.post('/cliente/', autenticarToken , function(req, res, next) {
     // nuevo cliente
