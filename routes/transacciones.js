@@ -45,6 +45,9 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
         info: [], // a esta variable se le ingresan los valores obtenidos abajo
     };
 
+    //en este arreglo almacenamos todos los productos para actualizar sus cantidades despues de realizar la transaccion
+    let productos_obj = [];
+
     //por cada producto
     for(let i=0;i < datos_productos.length; i++ ) {
         const datos = datos_productos[i];
@@ -69,6 +72,10 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
         });
         if(producto_obj === null) return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
 
+        // disminuimos la cantidad y lo guardamos en el arreglo para actualizar despues
+        producto_obj.cantidad = producto_obj.cantidad - cantidad;
+        productos_obj.push(producto_obj);
+
         //en este arreglo almacenamos la info de cada uno
         // producto, cantidad y precio
         let info = {
@@ -92,6 +99,13 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
     try {
         const save_vende_nuevo = await vende_nuevo.save()
         const save_registro_nuevo = await registro_vende_nuevo.save()
+
+        //actualizamos las cantidades de los productos
+        for(const indice in productos_obj) {
+            //console.log(productos_obj[indice]);
+            await productos_obj[indice].save();
+        }
+
         return res.sendStatus(200); //OK
     } catch(err) {
         if(err) {
