@@ -6,12 +6,14 @@ const router = express.Router();
 const autenticarToken = require('../autenticacion/authToken.js');
 const db = require('../base_datos/base_datos');
 
+const db_usuarios = require('../base_datos/usuarios');
+
 router.get('/productos/', autenticarToken , function(req, res, next) {
     // listar los productos existentes
     db.Producto.find({}, function(err,productos) {
         if(err) {
             console.log(err);
-            return res.send(500).send(err);
+            return res.sendStatus(500).send(err);
         }
 
         //console.log(productos);
@@ -25,7 +27,7 @@ router.get('/clientes/', autenticarToken, function(req, res, next) {
     db.Cliente.find({}, function(err,clientes) {
         if(err){
             console.log(err);
-            return res.send(err);
+            res.sendStatus(500).send(err);
         }
 
         res.json(clientes);
@@ -38,7 +40,7 @@ router.get('/proveedores/', autenticarToken, function(req, res, next) {
     db.Proveedor.find({}, function(err,proveedores) {
         if(err){
             console.log(err);
-            return res.send(err);
+            return res.sendStatus(500).send(err);
         }
 
         res.json(proveedores);
@@ -47,7 +49,17 @@ router.get('/proveedores/', autenticarToken, function(req, res, next) {
 })
 
 
+router.get('/usuarios/', autenticarToken, async function(req, res, next) {
+    //listar usuarios
+    try {
+        const usuarios = await db_usuarios.Usuario.find().select('-password') // sin obtener la password
+        return res.json(usuarios);
+    } catch(err) {
+        console.log(err);
+        return res.sendStatus(500).send(err);
+    }
 
+})
 
 
 
