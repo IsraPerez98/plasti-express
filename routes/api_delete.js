@@ -5,6 +5,7 @@ const router = express.Router();
 
 const autenticarToken = require('../autenticacion/authToken.js');
 const db = require('../base_datos/base_datos');
+const db_usuarios = require('../base_datos/usuarios');
 
 router.delete('/cliente/', autenticarToken , async function(req, res, next) {
     const cliente = req.body.cliente; // objectID del cliente
@@ -64,6 +65,28 @@ router.delete('/producto/', autenticarToken , async function(req, res, next) {
             return res.sendStatus(200); //OK
         } else {
             return res.status(400).send(`Producto ${producto} no existe en la base de datos`);
+        }
+    } catch(err) {
+        console.log(err);
+        return res.status(500).send(err);
+    }
+
+});
+
+router.delete('/usuario/', autenticarToken , async function(req, res, next) {
+    const usuario = req.body.usuario; // objectID del usuario
+
+    if(!(usuario)) return res.status(400).send("Falta el objectID del usuario");
+    
+    try {
+        const eliminado = await db_usuarios.Usuario.remove({ _id: usuario }, { single: true } );
+
+        if(eliminado.deletedCount >= 1) {
+            console.log(eliminado);
+
+            return res.sendStatus(200); //OK
+        } else {
+            return res.status(400).send(`Usuario ${usuario} no existe en la base de datos`);
         }
     } catch(err) {
         console.log(err);
