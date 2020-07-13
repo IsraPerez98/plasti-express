@@ -33,7 +33,7 @@ router.get('/clientes/', autenticarToken, function(req, res, next) {
         res.json(clientes);
         
     })
-})
+});
 
 router.get('/proveedores/', autenticarToken, function(req, res, next) {
     //listar proveedores
@@ -46,22 +46,42 @@ router.get('/proveedores/', autenticarToken, function(req, res, next) {
         res.json(proveedores);
         
     })
-})
+});
 
 
 router.get('/usuarios/', autenticarToken, async function(req, res, next) {
     //listar usuarios
     try {
-        const usuarios = await db_usuarios.Usuario.find().select('-password') // sin obtener la password
+        const usuarios = await db_usuarios.Usuario.find().select('-password'); // sin obtener la password
         return res.json(usuarios);
     } catch(err) {
         console.log(err);
         return res.sendStatus(500).send(err);
     }
 
-})
+});
 
 
+
+router.get('/registrosventas/', autenticarToken, async function(req, res, next) {
+    try {
+        const registrosventas = await db.RegistroVende.find();
+        return res.json(registrosventas);
+    } catch(err) {
+        console.log(err);
+        return res.sendStatus(500).send(err);
+    }
+});
+
+router.get('/registroscompras/', autenticarToken, async function(req, res, next) {
+    try {
+        const registroscompras = await db.RegistroCompra.find();
+        return res.json(registroscompras);
+    } catch(err) {
+        console.log(err);
+        return res.sendStatus(500).send(err);
+    }
+});
 
 
 
