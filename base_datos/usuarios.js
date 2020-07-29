@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-//datos de esto se escriben en el archivo .env, ver documentacion dotenv'
-//var mongoDB = `mongodb://${process.env.MONGODB_USUARIO}:${process.env.MONGODB_CONTRASENA}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PUERTO}/${process.env.MONGODB_DATABASE}`;
-// no vamos a considerar usuario y contraseña todavia
-const mongoDB = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PUERTO}/${process.env.MONGODB_DATABASE}`;
+//datos de esto se escriben en el archivo .env, ver documentacion del readme'
+const mongoDB = process.env.MONGODB_URI;
+
 console.log(mongoDB);
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
