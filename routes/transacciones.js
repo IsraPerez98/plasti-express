@@ -64,6 +64,9 @@ router.post('/venta/', autenticarToken, async function(req, res, netx) {
         if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
         if(isNaN(precio)) return res.status(400).send("El precio de la venta debe ser un numero");
 
+        if((cantidad) <= 0) return res.status(400).send("La cantidad ser mayor que 0");
+        if((precio) < 0) return res.status(400).send("El precio debe ser mayor que 0");
+
         const producto_obj = await db.Producto.findById(producto)
         .exec()
         .catch((err) => {
@@ -170,6 +173,9 @@ router.post('/compra/', autenticarToken , async function(req, res, next) {
 
         if(isNaN(cantidad)) return res.status(400).send("La cantidad debe ser un numero");
         if(isNaN(precio)) return res.status(400).send("El precio de la venta debe ser un numero");
+
+        if((cantidad) <= 0) return res.status(400).send("La cantidad ser mayor que 0");
+        if((precio) < 0) return res.status(400).send("El precio debe ser mayor que 0");
 
         const producto_obj = await db.Producto.findById(producto)
         .exec()
